@@ -4,32 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HireVirtuals Savings Calculator</title>
-    <meta name="description" content="Calculate how much you can save by hiring virtual assistants through HireVirtuals vs local hiring or other agencies.">
-    
-    <!-- React and Babel for JSX -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: #f8fafc;
-        }
+        body { margin: 0; padding: 0; font-family: system-ui; background: #f8fafc; }
+        .loading { text-align: center; padding: 50px; font-size: 18px; }
     </style>
 </head>
 <body>
-    <div id="calculator-root"></div>
+    <div id="calculator-root">
+        <div class="loading">Loading calculator...</div>
+    </div>
     
     <script type="text/babel">
-        // React component code goes here (from the artifact)
         const { useState } = React;
-        const { Calculator, DollarSign, TrendingDown, Clock, CheckCircle, Users } = lucide;
+        const { Calculator, DollarSign, TrendingDown, CheckCircle } = lucide;
 
         const SavingsCalculator = () => {
           const [selectedPosition, setSelectedPosition] = useState('');
@@ -37,56 +28,55 @@
           const [showResults, setShowResults] = useState(false);
           const [results, setResults] = useState(null);
 
-          // Position data with US average hourly rates and HireVirtuals pricing tiers
           const positions = {
             'Legal/Law Firm Administrative Assistant': {
               usHourlyRate: 28,
-              hireVirtualsRate: 13.5, // Strategic tier
+              hireVirtualsRate: 13.5,
               description: 'Document preparation, client communication, billing support'
             },
             'Marketing Assistant': {
               usHourlyRate: 25,
-              hireVirtualsRate: 11, // Specialized tier
+              hireVirtualsRate: 11,
               description: 'Social media, content creation, campaign support'
             },
             'E-commerce Store Assistant': {
               usHourlyRate: 22,
-              hireVirtualsRate: 9, // General Admin tier
+              hireVirtualsRate: 9,
               description: 'Order processing, customer service, inventory management'
             },
             'Customer Service Representative': {
               usHourlyRate: 20,
-              hireVirtualsRate: 9, // General Admin tier
+              hireVirtualsRate: 9,
               description: 'Phone support, email handling, issue resolution'
             },
             'Administrative/Virtual Assistant': {
               usHourlyRate: 24,
-              hireVirtualsRate: 9, // General Admin tier
+              hireVirtualsRate: 9,
               description: 'General admin, scheduling, data entry, correspondence'
             },
             'Finance & Accounting Assistant': {
               usHourlyRate: 30,
-              hireVirtualsRate: 11, // Specialized tier
+              hireVirtualsRate: 11,
               description: 'Bookkeeping, invoicing, financial data management'
             },
             'Real Estate Assistant': {
               usHourlyRate: 26,
-              hireVirtualsRate: 11, // Specialized tier
+              hireVirtualsRate: 11,
               description: 'Lead management, listing support, client coordination'
             },
             'IT & Development Support': {
               usHourlyRate: 35,
-              hireVirtualsRate: 13.5, // Strategic tier
+              hireVirtualsRate: 13.5,
               description: 'Technical support, basic development, system maintenance'
             },
             'Creative & Design Assistant': {
               usHourlyRate: 27,
-              hireVirtualsRate: 11, // Specialized tier
+              hireVirtualsRate: 11,
               description: 'Graphic design, content creation, brand support'
             },
             'Project Management Assistant': {
               usHourlyRate: 32,
-              hireVirtualsRate: 13.5, // Strategic tier
+              hireVirtualsRate: 13.5,
               description: 'Project coordination, timeline management, reporting'
             }
           };
@@ -98,31 +88,25 @@
             const usRate = position.usHourlyRate;
             const hireVirtualsRate = position.hireVirtualsRate;
             
-            // Monthly calculations (22 working days)
             const monthlyHours = hoursPerDay * 22;
             
-            // Local hiring costs
             const baseSalary = usRate * monthlyHours;
-            const benefits = baseSalary * 0.25; // 25% for benefits, taxes
-            const equipment = 200; // Monthly equipment/office allocation
-            const overhead = baseSalary * 0.15; // 15% overhead
+            const benefits = baseSalary * 0.25;
+            const equipment = 200;
+            const overhead = baseSalary * 0.15;
             const localTotal = baseSalary + benefits + equipment + overhead;
             
-            // Recruitment agency VA costs (VA rate + 20% annual fee)
-            const recruitmentVARate = 18; // Typical VA rate through agencies
+            const recruitmentVARate = 18;
             const recruitmentBaseSalary = recruitmentVARate * monthlyHours;
-            const recruitmentFee = (recruitmentBaseSalary * 12) * 0.20 / 12; // 20% annual fee monthly portion
+            const recruitmentFee = (recruitmentBaseSalary * 12) * 0.20 / 12;
             const recruitmentTotal = recruitmentBaseSalary + recruitmentFee;
             
-            // HireVirtuals costs
             const hireVirtualsTotal = hireVirtualsRate * monthlyHours;
             
-            // Annual calculations
             const localAnnual = localTotal * 12;
             const recruitmentAnnual = recruitmentTotal * 12;
             const hireVirtualsAnnual = hireVirtualsTotal * 12;
             
-            // Savings calculations
             const savingsVsLocal = localAnnual - hireVirtualsAnnual;
             const savingsVsOtherAgency = recruitmentAnnual - hireVirtualsAnnual;
             const percentSavingsLocal = ((savingsVsLocal / localAnnual) * 100);
@@ -133,11 +117,6 @@
                 local: localTotal,
                 recruitment: recruitmentTotal,
                 hireVirtuals: hireVirtualsTotal
-              },
-              annual: {
-                local: localAnnual,
-                recruitment: recruitmentAnnual,
-                hireVirtuals: hireVirtualsAnnual
               },
               savings: {
                 vsLocal: savingsVsLocal,
@@ -161,16 +140,233 @@
             }).format(amount);
           };
 
-          // [Include the rest of the component code and styles here]
-          // [This is a placeholder - you'll need to copy the full component code]
+          const styles = {
+            container: {
+              maxWidth: '1000px',
+              margin: '0 auto',
+              padding: '24px',
+              fontFamily: 'system-ui',
+              backgroundColor: '#f8fafc',
+              minHeight: '100vh'
+            },
+            card: {
+              backgroundColor: 'white',
+              borderRadius: '16px',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+              overflow: 'hidden'
+            },
+            header: {
+              background: 'linear-gradient(135deg, #0d9488 0%, #134e4a 100%)',
+              color: 'white',
+              padding: '32px',
+              textAlign: 'center'
+            },
+            title: {
+              fontSize: '32px',
+              fontWeight: 'bold',
+              margin: '0 0 16px 0'
+            },
+            content: {
+              padding: '40px'
+            },
+            inputGroup: {
+              marginBottom: '24px'
+            },
+            label: {
+              display: 'block',
+              fontSize: '16px',
+              fontWeight: '600',
+              marginBottom: '8px',
+              color: '#374151'
+            },
+            select: {
+              width: '100%',
+              padding: '12px 16px',
+              fontSize: '16px',
+              border: '2px solid #e5e7eb',
+              borderRadius: '8px',
+              backgroundColor: 'white'
+            },
+            input: {
+              width: '100%',
+              padding: '12px 16px',
+              fontSize: '16px',
+              border: '2px solid #e5e7eb',
+              borderRadius: '8px',
+              boxSizing: 'border-box'
+            },
+            button: {
+              width: '100%',
+              background: 'linear-gradient(135deg, #0d9488 0%, #134e4a 100%)',
+              color: 'white',
+              padding: '16px 24px',
+              borderRadius: '12px',
+              border: 'none',
+              fontSize: '18px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
+            },
+            resultsGrid: {
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+              gap: '20px',
+              marginBottom: '32px'
+            },
+            comparisonCard: {
+              backgroundColor: '#f9fafb',
+              borderRadius: '12px',
+              padding: '24px',
+              textAlign: 'center',
+              border: '2px solid #e5e7eb'
+            },
+            hireVirtualsCard: {
+              backgroundColor: '#ecfdf5',
+              border: '2px solid #10b981'
+            },
+            cardTitle: {
+              fontSize: '18px',
+              fontWeight: '600',
+              marginBottom: '12px'
+            },
+            cardAmount: {
+              fontSize: '28px',
+              fontWeight: 'bold',
+              marginBottom: '8px'
+            },
+            ctaButton: {
+              backgroundColor: 'white',
+              color: '#134e4a',
+              padding: '12px 32px',
+              borderRadius: '8px',
+              textDecoration: 'none',
+              fontWeight: '600',
+              display: 'inline-block'
+            }
+          };
 
-          return React.createElement('div', { style: styles.container }, 
-            // [Component JSX converted to React.createElement calls]
+          return (
+            <div style={styles.container}>
+              <div style={styles.card}>
+                <div style={styles.header}>
+                  <h1 style={styles.title}>Calculate Your Savings</h1>
+                  <p style={{opacity: 0.9, margin: 0}}>
+                    See how much you could save with HireVirtuals
+                  </p>
+                </div>
+
+                <div style={styles.content}>
+                  {!showResults ? (
+                    <div>
+                      <div style={styles.inputGroup}>
+                        <label style={styles.label}>Select position</label>
+                        <select
+                          style={styles.select}
+                          value={selectedPosition}
+                          onChange={(e) => setSelectedPosition(e.target.value)}
+                        >
+                          <option value="">Choose a position...</option>
+                          {Object.keys(positions).map(position => (
+                            <option key={position} value={position}>
+                              {position}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div style={styles.inputGroup}>
+                        <label style={styles.label}>Hours per day</label>
+                        <input
+                          type="number"
+                          style={styles.input}
+                          value={hoursPerDay}
+                          onChange={(e) => setHoursPerDay(Number(e.target.value))}
+                          min="1"
+                          max="12"
+                        />
+                      </div>
+
+                      <button
+                        style={styles.button}
+                        onClick={calculateSavings}
+                        disabled={!selectedPosition || !hoursPerDay}
+                      >
+                        Calculate My Savings
+                      </button>
+                    </div>
+                  ) : (
+                    <div>
+                      <h2 style={{textAlign: 'center', marginBottom: '32px'}}>
+                        Your Savings Analysis
+                      </h2>
+                      
+                      <div style={styles.resultsGrid}>
+                        <div style={styles.comparisonCard}>
+                          <h3 style={styles.cardTitle}>Local Hiring (US)</h3>
+                          <div style={{...styles.cardAmount, color: '#dc2626'}}>
+                            {formatCurrency(results.monthly.local)}
+                          </div>
+                          <div>per month</div>
+                        </div>
+
+                        <div style={styles.comparisonCard}>
+                          <h3 style={styles.cardTitle}>Other VA Agency</h3>
+                          <div style={{...styles.cardAmount, color: '#d97706'}}>
+                            {formatCurrency(results.monthly.recruitment)}
+                          </div>
+                          <div>per month</div>
+                        </div>
+
+                        <div style={{...styles.comparisonCard, ...styles.hireVirtualsCard}}>
+                          <h3 style={styles.cardTitle}>HireVirtuals</h3>
+                          <div style={{...styles.cardAmount, color: '#059669'}}>
+                            {formatCurrency(results.monthly.hireVirtuals)}
+                          </div>
+                          <div>per month</div>
+                        </div>
+                      </div>
+
+                      <div style={{
+                        background: 'linear-gradient(135deg, #0d9488 0%, #134e4a 100%)',
+                        color: 'white',
+                        borderRadius: '12px',
+                        padding: '32px',
+                        textAlign: 'center'
+                      }}>
+                        <h3 style={{marginBottom: '16px'}}>Ready to Start Saving?</h3>
+                        <p style={{marginBottom: '24px', opacity: 0.9}}>
+                          Get started with a 2-week free trial
+                        </p>
+                        <a 
+                          href="https://link.hirevirtuals.com/widget/bookings/hire-virtuals"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={styles.ctaButton}
+                        >
+                          Start Your Free Trial
+                        </a>
+                      </div>
+
+                      <div style={{textAlign: 'center', marginTop: '24px'}}>
+                        <span
+                          onClick={() => setShowResults(false)}
+                          style={{color: '#0d9488', cursor: 'pointer', fontWeight: '500'}}
+                        >
+                          ← Calculate for Different Position
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           );
         };
 
-        // Render the component
         ReactDOM.render(React.createElement(SavingsCalculator), document.getElementById('calculator-root'));
     </script>
 </body>
-</html>  
+</html>
