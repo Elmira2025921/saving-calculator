@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HireVirtuals Savings Calculator</title>
+    <meta name="description" content="Calculate how much you can save by hiring virtual assistants through HireVirtuals vs local hiring or other agencies.">
+    
+    <!-- React and Babel for JSX -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body>
+    <div id="calculator-root"></div>
+    
+    <script type="text/babel">
+        // React component code goes here (from the artifact)
+        const { useState } = React;
+        const { Calculator, DollarSign, TrendingDown, Clock, CheckCircle, Users } = lucide;
+
+        const SavingsCalculator = () => {
+          const [selectedPosition, setSelectedPosition] = useState('');
+          const [hoursPerDay, setHoursPerDay] = useState(8);
+          const [showResults, setShowResults] = useState(false);
+          const [results, setResults] = useState(null);
+
+          // Position data with US average hourly rates and HireVirtuals pricing tiers
+          const positions = {
+            'Legal/Law Firm Administrative Assistant': {
+              usHourlyRate: 28,
+              hireVirtualsRate: 13.5, // Strategic tier
+              description: 'Document preparation, client communication, billing support'
+            },
+            'Marketing Assistant': {
+              usHourlyRate: 25,
+              hireVirtualsRate: 11, // Specialized tier
+              description: 'Social media, content creation, campaign support'
+            },
+            'E-commerce Store Assistant': {
+              usHourlyRate: 22,
+              hireVirtualsRate: 9, // General Admin tier
+              description: 'Order processing, customer service, inventory management'
+            },
+            'Customer Service Representative': {
+              usHourlyRate: 20,
+              hireVirtualsRate: 9, // General Admin tier
+              description: 'Phone support, email handling, issue resolution'
+            },
+            'Administrative/Virtual Assistant': {
+              usHourlyRate: 24,
+              hireVirtualsRate: 9, // General Admin tier
+              description: 'General admin, scheduling, data entry, correspondence'
+            },
+            'Finance & Accounting Assistant': {
+              usHourlyRate: 30,
+              hireVirtualsRate: 11, // Specialized tier
+              description: 'Bookkeeping, invoicing, financial data management'
+            },
+            'Real Estate Assistant': {
+              usHourlyRate: 26,
+              hireVirtualsRate: 11, // Specialized tier
+              description: 'Lead management, listing support, client coordination'
+            },
+            'IT & Development Support': {
+              usHourlyRate: 35,
+              hireVirtualsRate: 13.5, // Strategic tier
+              description: 'Technical support, basic development, system maintenance'
+            },
+            'Creative & Design Assistant': {
+              usHourlyRate: 27,
+              hireVirtualsRate: 11, // Specialized tier
+              description: 'Graphic design, content creation, brand support'
+            },
+            'Project Management Assistant': {
+              usHourlyRate: 32,
+              hireVirtualsRate: 13.5, // Strategic tier
+              description: 'Project coordination, timeline management, reporting'
+            }
+          };
+
+          const calculateSavings = () => {
+            if (!selectedPosition || !hoursPerDay) return;
+
+            const position = positions[selectedPosition];
+            const usRate = position.usHourlyRate;
+            const hireVirtualsRate = position.hireVirtualsRate;
+            
+            // Monthly calculations (22 working days)
+            const monthlyHours = hoursPerDay * 22;
+            
+            // Local hiring costs
+            const baseSalary = usRate * monthlyHours;
+            const benefits = baseSalary * 0.25; // 25% for benefits, taxes
+            const equipment = 200; // Monthly equipment/office allocation
+            const overhead = baseSalary * 0.15; // 15% overhead
+            const localTotal = baseSalary + benefits + equipment + overhead;
+            
+            // Recruitment agency VA costs (VA rate + 20% annual fee)
+            const recruitmentVARate = 18; // Typical VA rate through agencies
+            const recruitmentBaseSalary = recruitmentVARate * monthlyHours;
+            const recruitmentFee = (recruitmentBaseSalary * 12) * 0.20 / 12; // 20% annual fee monthly portion
+            const recruitmentTotal = recruitmentBaseSalary + recruitmentFee;
+            
+            // HireVirtuals costs
+            const hireVirtualsTotal = hireVirtualsRate * monthlyHours;
+            
+            // Annual calculations
+            const localAnnual = localTotal * 12;
+            const recruitmentAnnual = recruitmentTotal * 12;
+            const hireVirtualsAnnual = hireVirtualsTotal * 12;
+            
+            // Savings calculations
+            const savingsVsLocal = localAnnual - hireVirtualsAnnual;
+            const savingsVsOtherAgency = recruitmentAnnual - hireVirtualsAnnual;
+            const percentSavingsLocal = ((savingsVsLocal / localAnnual) * 100);
+            const percentSavingsOtherAgency = ((savingsVsOtherAgency / recruitmentAnnual) * 100);
+
+            setResults({
+              monthly: {
+                local: localTotal,
+                recruitment: recruitmentTotal,
+                hireVirtuals: hireVirtualsTotal
+              },
+              annual: {
+                local: localAnnual,
+                recruitment: recruitmentAnnual,
+                hireVirtuals: hireVirtualsAnnual
+              },
+              savings: {
+                vsLocal: savingsVsLocal,
+                vsRecruitment: savingsVsOtherAgency,
+                percentLocal: percentSavingsLocal,
+                percentRecruitment: percentSavingsOtherAgency
+              },
+              position: selectedPosition,
+              hoursPerDay: hoursPerDay
+            });
+            
+            setShowResults(true);
+          };
+
+          const formatCurrency = (amount) => {
+            return new Intl.NumberFormat('en-US', {
+              style: 'currency',
+              currency: 'USD',
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0
+            }).format(amount);
+          };
+
+          // [Include the rest of the component code and styles here]
+          // [This is a placeholder - you'll need to copy the full component code]
+
+          return React.createElement('div', { style: styles.container }, 
+            // [Component JSX converted to React.createElement calls]
+          );
+        };
+
+        // Render the component
+        ReactDOM.render(React.createElement(SavingsCalculator), document.getElementById('calculator-root'));
+    </script>
+</body>
+</html>  
